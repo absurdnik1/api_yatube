@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from rest_framework.exceptions import MethodNotAllowed
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 
 
@@ -28,12 +28,9 @@ class PostViewSet(viewsets.ModelViewSet):
         instance.delete()
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-
-    def create(self, request):
-        raise MethodNotAllowed(request.method)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -42,7 +39,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
-        post = Post.objects.get(id=post_id)
+        post = get_object_or_404(Post, id=post_id)
         return post.comments.all()
 
     def perform_create(self, serializer):

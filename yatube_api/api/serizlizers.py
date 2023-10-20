@@ -3,9 +3,8 @@ from posts.models import Post, Group, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(
-        source='author.username',
-        default=serializers.CurrentUserDefault(),
+    author = serializers.SlugRelatedField(
+        slug_field='username',
         read_only=True,
     )
     group = serializers.PrimaryKeyRelatedField(
@@ -27,8 +26,9 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(
-        default=serializers.CurrentUserDefault()
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
     )
     post = serializers.PrimaryKeyRelatedField(read_only=True)
 
